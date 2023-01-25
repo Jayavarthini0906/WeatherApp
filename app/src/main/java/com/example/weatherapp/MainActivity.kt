@@ -42,24 +42,24 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
+import kotlinx.android.synthetic.main.activity_main.*
+
 
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
 
+
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
 
-    private var mProgressDialog: Dialog?=null
-
-   // private var tvMainSf:TextView= findViewById(R.id.tv_mainsf)
-    //private var tvMainDescriptionSF:TextView=findViewById(R.id.tv_main_descriptionsf)
-    //private var tvMainHM:TextView=findViewById(R.id.tv_mainhm)
+    private var mProgressDialog: Dialog? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mFusedLocationClient=LocationServices.getFusedLocationProviderClient(this)
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         if (!isLocationEnabled()) {
             Toast.makeText(
@@ -74,16 +74,18 @@ class MainActivity : AppCompatActivity() {
             Dexter.withActivity(this).withPermissions(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
-            ).withListener(object:MultiplePermissionsListener{
+            ).withListener(object : MultiplePermissionsListener {
 
                 override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-                    if(report!!.areAllPermissionsGranted()){
+                    if (report!!.areAllPermissionsGranted()) {
                         //Add Request Location Data
                         requestLocationData()
                     }
 
-                    if(report.isAnyPermissionPermanentlyDenied){
-                        Toast.makeText(this@MainActivity,"You have Denied Location Permission, Please enable as mandatory",Toast.LENGTH_SHORT).show()
+                    if (report.isAnyPermissionPermanentlyDenied) {
+                        Toast.makeText(this@MainActivity,
+                            "You have Denied Location Permission, Please enable as mandatory",
+                            Toast.LENGTH_SHORT).show()
                     }
                 }
 
@@ -96,90 +98,101 @@ class MainActivity : AppCompatActivity() {
             }).onSameThread().check()
         }
 
-        
+
     }
-    private fun isLocationEnabled():Boolean{
+
+    private fun isLocationEnabled(): Boolean {
         //Access to the System Location Services
 
-        val locationManager:LocationManager=getSystemService(Context.LOCATION_SERVICE)as LocationManager
+        val locationManager: LocationManager =
+            getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-                ||locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
 
 
-    private fun showRationalDialogForPermissions(){
-        AlertDialog.Builder(this).setMessage("Weather Needs Turn On the Location. Please enable from Settings").setPositiveButton(
-            "GO TO SETTINGS"
-        ) {_,_ ->
-            try {
-                val intent=Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                val uri=Uri.fromParts("package",packageName,null)
-                intent.data=uri
-                startActivity(intent)
-            }catch (e:ActivityNotFoundException){
-                e.printStackTrace()
-            } }
-            .setNegativeButton("Cancel"){
-                dialog,_->dialog.dismiss()
+    private fun showRationalDialogForPermissions() {
+        AlertDialog.Builder(this)
+            .setMessage("Weather Needs Turn On the Location. Please enable from Settings")
+            .setPositiveButton(
+                "GO TO SETTINGS"
+            ) { _, _ ->
+                try {
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    val uri = Uri.fromParts("package", packageName, null)
+                    intent.data = uri
+                    startActivity(intent)
+                } catch (e: ActivityNotFoundException) {
+                    e.printStackTrace()
+                }
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
             }.show()
     }
 
     @SuppressLint("MissingPermission")
-    private fun requestLocationData(){
+    private fun requestLocationData() {
 
-        val mLocationRequest= com.google.android.gms.location.LocationRequest()
-        mLocationRequest.priority= PRIORITY_HIGH_ACCURACY
+        val mLocationRequest = com.google.android.gms.location.LocationRequest()
+        mLocationRequest.priority = PRIORITY_HIGH_ACCURACY
 
         mFusedLocationClient.requestLocationUpdates(
-            mLocationRequest,mLocationCallback,
+            mLocationRequest, mLocationCallback,
             Looper.myLooper()
         )
     }
-    private val mLocationCallback=object :LocationCallback(){
-        override fun onLocationResult(locationResult: LocationResult) {
-            val mLastLocation:Location=locationResult.lastLocation
-            val latitude=mLastLocation.latitude
-            Log.i("Current Latitude","$latitude")
 
-            val longitude=mLastLocation.longitude
-            Log.i("Current Longitude","$longitude")
-            getLocationWeatherDetails(latitude,longitude)
+    private val mLocationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            val mLastLocation: Location = locationResult.lastLocation
+            val latitude = mLastLocation.latitude
+            Log.i("Current Latitude", "$latitude")
+
+            val longitude = mLastLocation.longitude
+            Log.i("Current Longitude", "$longitude")
+            getLocationWeatherDetails(latitude, longitude)
         }
     }
 
-    private fun getLocationWeatherDetails(latitude:Double,longitude:Double){
-        if(Constants.isNetworkAvailable(this)){
-            val retrofit:Retrofit=Retrofit.Builder()
+    private fun getLocationWeatherDetails(latitude: Double, longitude: Double) {
+        if (Constants.isNetworkAvailable(this)) {
+            val retrofit: Retrofit = Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
 
-            val service:WeatherService=retrofit.create(WeatherService::class.java)
+            val service: WeatherService = retrofit.create(WeatherService::class.java)
 
-            val listCall:Call<WeatherResponse> =service.getWeather(latitude,longitude,Constants.METRIC_UNIT,Constants.APP_ID)
+            val listCall: Call<WeatherResponse> =
+                service.getWeather(latitude, longitude, Constants.METRIC_UNIT, Constants.APP_ID)
 
             showCustomProgressDialog()
 
-            listCall.enqueue(object :Callback<WeatherResponse>{
+            listCall.enqueue(object : Callback<WeatherResponse> {
                 @RequiresApi(Build.VERSION_CODES.N)
-                override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>) {
-                    if(response!!.isSuccessful){
+                override fun onResponse(
+                    call: Call<WeatherResponse>,
+                    response: Response<WeatherResponse>
+                ) {
+                    if (response!!.isSuccessful) {
 
                         hideProgressDialog()
                         val weatherList: WeatherResponse = response.body()!!
-                        //setupUI(weatherList)
-                        Log.i("Response Result","$weatherList")
-                    }else{
-                        val rc=response.code()
-                        when(rc){
-                            400->{
-                                Log.e("Error 400","Bad Connection")
+                        Log.i("Response Result", "$weatherList")
+                        setupUI(weatherList)
+
+                    } else {
+                        val rc = response.code()
+                        when (rc) {
+                            400 -> {
+                                Log.e("Error 400", "Bad Connection")
                             }
-                            404->{
-                                Log.e("Error 404","Not Found")
+                            404 -> {
+                                Log.e("Error 404", "Not Found")
                             }
-                            else->{
-                                Log.e("Error","Generic Error")
+                            else -> {
+                                Log.e("Error", "Generic Error")
                             }
                         }
                     }
@@ -189,46 +202,46 @@ class MainActivity : AppCompatActivity() {
 
                     hideProgressDialog()
 
-                   Log.e("Error",t!!.message.toString())
+                    Log.e("Error", t!!.message.toString())
 
                 }
 
             })
-        }else{
-            Toast.makeText(this@MainActivity,"Internet connection Not Available",Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this@MainActivity,
+                "Internet connection Not Available",
+                Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun showCustomProgressDialog(){
-        mProgressDialog=Dialog(this)
+    private fun showCustomProgressDialog() {
+        mProgressDialog = Dialog(this)
 
         mProgressDialog!!.setContentView(R.layout.dialog_custom_progress)
 
         mProgressDialog!!.show()
     }
 
-    private fun hideProgressDialog(){
-        if(mProgressDialog!=null){
+    private fun hideProgressDialog() {
+        if (mProgressDialog != null) {
             mProgressDialog!!.dismiss()
         }
     }
 
-   /* @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun setupUI(weatherList:WeatherResponse){
-        for(i in weatherList.weather.indices){
-            Log.i("Weather Response",weatherList.weather.toString())
-
-            //tvMainSf.text=weatherList.weather[i].main
-            //tvMainDescriptionSF.text=weatherList.weather[i].description
-            //tvMainHM.text=weatherList.main.temp.toString()+getUnit(application.resources.configuration.locales.toString())
+        for(i in weatherList.weather.indices) {
+            Log.i("Weather Name", weatherList.weather.toString())
         }
-    }*/
+    }
 
-   /* private fun getUnit(value:String):String?{
+}
+
+
+    private fun getUnit(value:String):String?{
         var value="°C"
         if("US"==value || "LR"==value || "MM"==value){
             value="°F"
         }
         return value
-    }*/
-}
+    }
