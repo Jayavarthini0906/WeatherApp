@@ -17,6 +17,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.ActivityNotFoundException
+import android.content.SharedPreferences
 import android.location.Location
 import android.location.LocationRequest
 import android.location.LocationRequest.Builder
@@ -40,6 +41,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.gson.Gson
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
@@ -59,7 +61,10 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
 
+    private lateinit var mSharedPreferences: SharedPreferences
 
+
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -68,6 +73,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        mSharedPreferences=getSharedPreferences(Constants.PREFERENCE_NAME,Context.MODE_PRIVATE)
+
+        setupUI()
 
         if (!isLocationEnabled()) {
             Toast.makeText(
@@ -188,7 +197,12 @@ class MainActivity : AppCompatActivity() {
                         hideProgressDialog()
                         val weatherList: WeatherResponse = response.body()!!
                         Log.i("Response Result", "$weatherList")
-                        setupUI(weatherList)
+
+                        val weatherResponseJsonString= Gson().toJson(weatherList)
+                        val editor=mSharedPreferences.edit()
+                        editor.putString(Constants.WEATHER_RESPONSE_DATA,weatherResponseJsonString)
+                        editor.apply()
+                        setupUI()
 
                     } else {
                         val rc = response.code()
@@ -253,31 +267,38 @@ class MainActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun setupUI(weatherList:WeatherResponse){
-        for(i in weatherList.weather.indices) {
-            Log.i("Weather Name", weatherList.weather.toString())
+    private fun setupUI(){
+
+        val weatherResponseJsonString=mSharedPreferences.getString(Constants.WEATHER_RESPONSE_DATA,"")
+
+        if(!weatherResponseJsonString.isNullOrEmpty()){
+            val weatherList=Gson().fromJson(weatherResponseJsonString,WeatherResponse::class.java)
+            for(i in weatherList.weather.indices) {
+                Log.i("Weather Name", weatherList.weather.toString())
 
 
-            binding.tvMainSf.text=weatherList.weather[i].main
-            binding.tvMainDescriptionSf.text=weatherList.weather[i].description
-            binding.tvMainHm.text=weatherList.main.temp.toString()+ getUnit(application.resources.configuration.locales.toString())
+                binding.tvMainSf.text=weatherList.weather[i].main
+                binding.tvMainDescriptionSf.text=weatherList.weather[i].description
+                binding.tvMainHm.text=weatherList.main.temp.toString()+ getUnit(application.resources.configuration.locales.toString())
 
-            binding.tvMainSr.text=unixTime(weatherList.sys.sunrise)
-            binding.tvMainSs.text=unixTime(weatherList.sys.sunset)
+                binding.tvMainSr.text=unixTime(weatherList.sys.sunrise)
+                binding.tvMainSs.text=unixTime(weatherList.sys.sunset)
 
-            binding.tvMainDescriptionHm.text=weatherList.main.humidity.toString()+"per cent"
-            binding.tvMainMin.text=weatherList.main.temp_min.toString()+"min"
-            binding.tvMainMax.text=weatherList.main.temp_max.toString()+"max"
-            binding.tvMainWind.text=weatherList.wind.speed.toString()
-            binding.tvMainName.text=weatherList.name
-            binding.tvMainDescriptionCountry.text=weatherList.sys.country
+                binding.tvMainDescriptionHm.text=weatherList.main.humidity.toString()+"per cent"
+                binding.tvMainMin.text=weatherList.main.temp_min.toString()+"min"
+                binding.tvMainMax.text=weatherList.main.temp_max.toString()+"max"
+                binding.tvMainWind.text=weatherList.wind.speed.toString()
+                binding.tvMainName.text=weatherList.name
+                binding.tvMainDescriptionCountry.text=weatherList.sys.country
 
-            /*
-            when(weatherList.weather[i].icon{
-            "01d"->iv_main.setImageResource(R.drawable.sunny)
+                /*
+                when(weatherList.weather[i].icon{
+                "01d"->iv_main.setImageResource(R.drawable.sunny)
+                }
+                 */
             }
-             */
         }
+
     }
     private fun getUnit(value:String):String?{
         var value="°C"
