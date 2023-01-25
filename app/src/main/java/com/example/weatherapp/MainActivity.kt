@@ -25,6 +25,8 @@ import android.os.Build
 import android.os.Looper
 import android.renderscript.RenderScript.Priority
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -228,6 +230,22 @@ class MainActivity : AppCompatActivity() {
         mProgressDialog!!.show()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main,menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        return when(item.itemId){
+            R.id.action_refresh-> {
+                requestLocationData()
+                true
+            }else -> super.onOptionsItemSelected(item)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun hideProgressDialog() {
         if (mProgressDialog != null) {
             mProgressDialog!!.dismiss()
@@ -254,10 +272,11 @@ class MainActivity : AppCompatActivity() {
             binding.tvMainName.text=weatherList.name
             binding.tvMainDescriptionCountry.text=weatherList.sys.country
 
-
-            when(weatherList.weather[i].icon){
-
+            /*
+            when(weatherList.weather[i].icon{
+            "01d"->iv_main.setImageResource(R.drawable.sunny)
             }
+             */
         }
     }
     private fun getUnit(value:String):String?{

@@ -32,48 +32,51 @@
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:layout_weight="1"
-           android:backgroundTint="@color/teal_200"
+            android:backgroundTint="@color/white"
             app:cardCornerRadius="8dp"
             app:cardElevation="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:foregroundTint="#009688"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="10dp"
-                >
+                android:padding="10dp">
+
                 <ImageView
                     android:id="@+id/iv_snowflake"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginEnd="10dp"
                     android:contentDescription="@string/image_ContentDescription"
-                    app:srcCompat="@drawable/snowflake"/>
+                    app:srcCompat="@drawable/cloud" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/tvMainSf"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:textColor="@color/primary_text_color"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    tools:text="Weather"/>
-                <TextView
-                    android:id="@+id/tvMainDescriptionSf"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:textColor="@color/secondary_text_color"
-                    android:textSize="16sp"
-                    tools:text="condition"/>
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvMainSf"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:textColor="@color/primary_text_color"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        tools:text="Weather" />
+
+                    <TextView
+                        android:id="@+id/tvMainDescriptionSf"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:textColor="@color/secondary_text_color"
+                        android:textSize="16sp"
+                        tools:text="condition" />
+                </LinearLayout>
             </LinearLayout>
-    </LinearLayout>
 
 </androidx.cardview.widget.CardView>
 
