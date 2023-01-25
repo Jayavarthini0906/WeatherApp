@@ -29,6 +29,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
+import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.models.Weather
 import com.example.weatherapp.models.WeatherResponse
 import com.example.weatherapp.network.WeatherService
@@ -42,7 +43,8 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
-import kotlinx.android.synthetic.main.activity_main.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 @Suppress("DEPRECATION")
@@ -53,11 +55,15 @@ class MainActivity : AppCompatActivity() {
 
     private var mProgressDialog: Dialog? = null
 
+    lateinit var binding: ActivityMainBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
+        binding=ActivityMainBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -232,12 +238,23 @@ class MainActivity : AppCompatActivity() {
     private fun setupUI(weatherList:WeatherResponse){
         for(i in weatherList.weather.indices) {
             Log.i("Weather Name", weatherList.weather.toString())
+
+
+            binding.tvMainSf.text=weatherList.weather[i].main
+            binding.tvMainDescriptionSf.text=weatherList.weather[i].description
+            binding.tvMainHm.text=weatherList.main.temp.toString()+ getUnit(application.resources.configuration.locales.toString())
+
+            binding.tvMainSr.text=unixTime(weatherList.sys.sunrise)
+            binding.tvMainSs.text=unixTime(weatherList.sys.sunset)
+
+            binding.tvMainDescriptionHm.text=weatherList.main.humidity.toString()+"per cent"
+            binding.tvMainMin.text=weatherList.main.temp_min.toString()+"min"
+            binding.tvMainMax.text=weatherList.main.temp_max.toString()+"max"
+            binding.tvMainWind.text=weatherList.wind.speed.toString()
+            binding.tvMainName.text=weatherList.name
+            binding.tvMainDescriptionCountry.text=weatherList.sys.country
         }
     }
-
-}
-
-
     private fun getUnit(value:String):String?{
         var value="°C"
         if("US"==value || "LR"==value || "MM"==value){
@@ -245,3 +262,14 @@ class MainActivity : AppCompatActivity() {
         }
         return value
     }
+
+    private fun unixTime(timex:Long):String?{
+        val date= Date(timex*1000L)
+        val sdf=SimpleDateFormat("HH:MM:SS")
+        sdf.timeZone= TimeZone.getDefault()
+        return sdf.format(date)
+    }
+
+}
+
+

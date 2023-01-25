@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <TextView
-                    android:id="@+id/tv_main_sf"
+                    android:id="@+id/tvMainSf"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="end"
@@ -65,7 +65,7 @@
                     android:textStyle="bold"
                     tools:text="Weather"/>
                 <TextView
-                    android:id="@+id/tv_main_descriptionsf"
+                    android:id="@+id/tvMainDescriptionSf"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="end"
@@ -106,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView
-                        android:id="@+id/tv_mainhm"
+                        android:id="@+id/tvMainHm"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="end"
@@ -115,7 +115,7 @@
                         android:textStyle="bold"
                         tools:text="Degree"/>
                     <TextView
-                        android:id="@+id/tv_main_descriptionhm"
+                        android:id="@+id/tvMainDescriptionHm"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="end"
@@ -161,16 +161,16 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView
-                        android:id="@+id/tv_maintm"
+                        android:id="@+id/tvMainMax"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="end"
                         android:textColor="@color/primary_text_color"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold"
                         tools:text="Maximum"/>
                     <TextView
-                        android:id="@+id/tv_main_descriptiontm"
+                        android:id="@+id/tvMainMin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="end"
@@ -211,7 +211,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView
-                        android:id="@+id/tv_mainwind"
+                        android:id="@+id/tvMainWind"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="end"
@@ -220,13 +220,13 @@
                         android:textStyle="bold"
                         tools:text="Wind"/>
                     <TextView
-                        android:id="@+id/tv_main_descriptionwind"
+                        android:id="@+id/tvMainDescriptionWind"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="end"
                         android:textColor="@color/secondary_text_color"
                         android:textSize="16sp"
-                        tools:text="@string/miles_per_hour"/>
+                        android:text="@string/miles_per_hour"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -268,7 +268,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView
-                        android:id="@+id/tv_mainsr"
+                        android:id="@+id/tvMainSr"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="end"
@@ -276,13 +276,6 @@
                         android:textSize="18sp"
                         android:textStyle="bold"
                         tools:text="Sunrise"/>
-                    <TextView
-                        android:id="@+id/tv_main_descriptionsr"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="end"
-                        android:textColor="@color/secondary_text_color"
-                        android:textSize="16sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -317,7 +310,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView
-                        android:id="@+id/tv_mainss"
+                        android:id="@+id/tvMainSs"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="end"
@@ -325,13 +318,7 @@
                         android:textSize="18sp"
                         android:textStyle="bold"
                         tools:text="Sunset"/>
-                    <TextView
-                        android:id="@+id/tv_main_descriptionss"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="end"
-                        android:textColor="@color/secondary_text_color"
-                        android:textSize="16sp" />
+
                 </LinearLayout>
             </LinearLayout>
 
@@ -373,7 +360,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView
-                        android:id="@+id/tv_mainloc"
+                        android:id="@+id/tvMainName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="end"
@@ -382,7 +369,7 @@
                         android:textStyle="bold"
                         tools:text="Name"/>
                     <TextView
-                        android:id="@+id/tv_main_descriptionloc"
+                        android:id="@+id/tvMainDescriptionCountry"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="end"
