@@ -253,6 +253,11 @@ class MainActivity : AppCompatActivity() {
             binding.tvMainWind.text=weatherList.wind.speed.toString()
             binding.tvMainName.text=weatherList.name
             binding.tvMainDescriptionCountry.text=weatherList.sys.country
+
+
+            when(weatherList.weather[i].icon){
+
+            }
         }
     }
     private fun getUnit(value:String):String?{
